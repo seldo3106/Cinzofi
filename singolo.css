@@ -1,0 +1,104 @@
+body{
+    margin: 0;
+    overflow-x: hidden;
+    /* background-color: #FFFACC; */
+}
+
+/* Barra */
+.barra{
+    /* background-image: linear-gradient(#6330A6,#A63067); */
+    /* font-family: "Comic Sans MS", "Comic Sans", cursive; */
+    font-family: "Comic Sans MS", "Comic Sans";
+    color: white;
+    display: flex;
+    align-items: center;
+}
+.barra a{
+    color: #FFFFFF00;
+}
+#tedio{
+    height: 300px;
+    display: flexbox;
+    flex-grow: 10;
+}
+#info{
+    display: flex;
+    align-items: center;
+}
+.dati{
+    width: 40%;
+}
+#copertina{
+    margin: 30px 30px 30px 150px;
+}
+#collegamento{
+    color: white;
+}
+#collegamento p{
+    margin-top: 110px;
+}
+#tedio h1{
+    margin-top: 0;
+}
+#testo{
+    margin-left: 150px;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+/* Pulsante */
+#indietro{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    background-color: #CFBCDF;
+    bottom: 30px;
+    left: 30px;
+    width: 95px;
+    height: 95px;
+    border-radius: 100px;
+}
+#indietro:hover{
+    background-color: #cfbcdf9d;
+}
+#indietro:active{
+    background-color: #CFBCDF;
+}
+
+@media(max-width: 500px){
+    .barra{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: fit-content;
+        margin: 0;
+        width: 100%;
+    }
+    #tedio{
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    #collegamento p{
+        margin-top: 20px;
+    }
+    #info{
+        width: 100%;
+        margin-left: 30%;
+    }
+    #copertina{
+        margin-top: 10px;
+        margin-left: 20px;
+    }
+    #testo{
+        margin-left: 10px;
+        font-size: 15px;
+    }
+    .barra img{
+        width: 400px;
+        height: 400px;
+    }
+
+}
