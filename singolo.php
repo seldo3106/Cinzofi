@@ -16,10 +16,23 @@ $id = $_GET['id'];
 $temp = $connessione->query("SELECT * FROM singolo WHERE idsingolo = ". $id);
 $singolo = $temp->fetch_array();
 
-//Salva la ennupla con le info di un album
-$temp = $connessione->query("SELECT * FROM album WHERE idalbum = ". $singolo['idalbum']);
-$album = $temp->fetch_array();
-$nomeImmagine = str_replace("?","",$album['nome']);
+if($singolo['idalbum'] == null){
+    //Salva la ennupla con le info di un singolo visto che non è associato a nessun album
+    $nomeImmagine = $singolo['nome'];
+    $temp = $connessione->query("SELECT * FROM singolo_colore INNER JOIN singolo ON singolo_colore.idsingolo = singolo.idsingolo WHERE singolo.idsingolo = '". $id ."'");
+    $colori = $temp->fetch_array();
+    $colore1 = $colori['colore1'];
+    $colore2 = $colori['colore2'];
+    $formato = $colori['formato'];
+}else{
+    //Salva la ennupla con le info di un album
+    $temp = $connessione->query("SELECT * FROM album WHERE idalbum = ". $singolo['idalbum']);
+    $album = $temp->fetch_array();
+    $nomeImmagine = str_replace("?","",$album['nome']);
+    $colore1 = $album['colore1'];
+    $colore2 = $album['colore2'];
+    $formato = $album['formato'];
+}
 
 //Salva la ennupla con le info di chi l'ha cantato
 $idartisti = $connessione->query("SELECT * FROM cantanti_singolo WHERE idsingolo = ". $id);
@@ -48,8 +61,8 @@ $idprod = $connessione->query("SELECT * FROM prod_singolo WHERE idsingolo = ". $
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
-        <div class="barra" style="background-image: linear-gradient(#<?= $album['colore1'] ?>,#<?= $album['colore2'] ?>);">
-			<img src="copertine/<?= $artista['nome'] ?>/<?= $nomeImmagine ?>.png" width="300" height="300" id="copertina">
+        <div class="barra" style="background-image: linear-gradient(#<?= $colore1 ?>,#<?= $colore2 ?>);">
+			<img src="copertine/<?= $artista['nome'] ?>/<?= $nomeImmagine ?>.<?= $formato ?>" width="300" height="300" id="copertina">
 			<div id="tedio">
 				<h1><?= $singolo['nome'] ?></h1>
                 <div id="info">

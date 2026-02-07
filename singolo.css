@@ -66,6 +66,9 @@ body{
 }
 
 @media(max-width: 500px){
+    html{
+        overflow-x: scroll;
+    }
     .barra{
         display: flex;
         flex-direction: column;

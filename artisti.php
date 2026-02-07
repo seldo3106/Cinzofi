@@ -6,7 +6,7 @@ $database = "cinzofi";
 
 $connessione = new mysqli($host,$user,$password,$database);
 
-if($connessione == false){
+if($connessione->connect_error){
     die("Errore di connessione: " . $connessione->connect_error);
 }
 
@@ -53,7 +53,6 @@ $album = $connessione->query("SELECT * FROM album INNER JOIN cantanti_album ON a
 		<div class="corpo">
             <?php 
             while($tempora = $album->fetch_array()){	//Ciclo per gli album
-				//$idNumero = $tempora['idalbum'];
 
 				//Per vedere se è un album, mixtape o EP
 				switch($tempora['tipo']){
@@ -75,7 +74,7 @@ $album = $connessione->query("SELECT * FROM album INNER JOIN cantanti_album ON a
                 $testoHTML = '
             <div class="album">
 				<h3>' . $tempora['nome'] . ' - '. $tipo .'</h3>
-				<img src="copertine/'. $artista['nome'] .'/'. $nomeImmagine .'.png" height="400px">
+				<img src="copertine/'. $artista['nome'] .'/'. $nomeImmagine .'.'. $tempora['formato'] .'" height="400px">
 				<ol class="tracce">';
 
 				
@@ -91,31 +90,29 @@ $album = $connessione->query("SELECT * FROM album INNER JOIN cantanti_album ON a
             }
             ?>
 		</div>
+		
+		<?php
+			$richiesta = $connessione->query("SELECT * FROM singolo INNER JOIN cantanti_singolo ON singolo.idsingolo = cantanti_singolo.idsingolo WHERE cantanti_singolo.idartista = ". $id . " AND singolo.idalbum IS NULL ORDER BY data_pub DESC");
+			if($richiesta->num_rows > 0){
+				$testoHTML = '
 		<div class="barraSin">
 			<h4>Singoli senza album</h4>
 			<div class="singoli">
-				<?php
-					$richiesta = $connessione->query("SELECT * FROM singolo INNER JOIN cantanti_singolo ON singolo.idsingolo = cantanti_singolo.idsingolo WHERE cantanti_singolo.idartista = ". $id . " AND singolo.idalbum IS NULL ORDER BY data_pub DESC");
-					while($singolo = $richiesta->fetch_array()){
-						$testoHTML = '
-				<a href="singolo.php?id='. $singolo['idsingolo'] .'"><div class="singolo">
-				<h3>'. $singolo['nome'] .'</h3>
-				<img src="copertine/'. $artista['nome'] .'/'. $singolo['nome'] .'.png">
-				</div></a>';
+				';
 
-						echo $testoHTML;
-					}
-				?>
-				<!-- 
-				<a href="./singoli/uNa_DiReZioNe_giUsTa.html"><div class="singolo">
-					<h3>uNa DiReZioNe giUsTa<br>(feat. Neffa)</h3>
-					<img src="./singoli/uNa_DiReZioNe_giUsTa.png">
-				</div></a>
-				<a href="./singoli/6itch.html"><div class="singolo">
-					<h3>6itch</h3>
-					<img src="./singoli/6itch.png">
-				</div></a> -->
-			</div>
-		</div>
+				while($singolo = $richiesta->fetch_array()){
+					$testoHTML .= '
+		<a href="singolo.php?id='. $singolo['idsingolo'] .'"><div class="singolo">
+		<h3>'. $singolo['nome'] .'</h3>
+		<img src="copertine/'. $artista['nome'] .'/'. $singolo['nome'] .'.png">
+		</div></a>';
+					
+				}
+				
+				$testoHTML .= '<div><div>';
+				echo $testoHTML;
+			}
+			
+		?>
 	</body>
 </html>

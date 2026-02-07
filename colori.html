@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrattore Colori per Gradienti</title>
+    <style>
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            background-color: #f0f0f0;
+            transition: background 0.5s ease;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        #preview {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .color-box {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .color-info {
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            min-width: 100px;
+        }
+        input[type="file"] { margin-top: 20px; }
+        code { display: block; background: #333; color: #fff; padding: 15px; margin-top: 20px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Gradient Picker</h2>
+    <p>Carica la copertina dell'album per generare il codice CSS.</p>
+    
+    <input type="file" id="upload" accept="image/*">
+    <img id="preview">
+
+    <div class="color-box" id="result" style="display:none;">
+        <div id="c1" class="color-info"></div>
+        <div id="c2" class="color-info"></div>
+    </div>
+
+    <code id="cssCode" style="display:none;"></code>
+</div>
+
+<script>
+    const upload = document.getElementById('upload');
+    const preview = document.getElementById('preview');
+    const resultDiv = document.getElementById('result');
+    const cssCode = document.getElementById('cssCode');
+
+    upload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            preview.src = event.target.result;
+            preview.style.display = 'block';
+            
+            preview.onload = function() {
+                estraiColori(preview);
+            }
+        }
+        reader.readAsDataURL(file);
+    });
+
+    function estraiColori(img) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        ctx.drawImage(img, 0, 0);
+
+        // Campioniamo due punti: uno in alto a sx e uno in basso a dx
+        // Usiamo un offset del 10% per evitare bordi bianchi/neri
+        const p1 = ctx.getImageData(canvas.width * 0.2, canvas.height * 0.2, 1, 1).data;
+        const p2 = ctx.getImageData(canvas.width * 0.8, canvas.height * 0.8, 1, 1).data;
+
+        const hex1 = rgbToHex(p1[0], p1[1], p1[2]);
+        const hex2 = rgbToHex(p2[0], p2[1], p2[2]);
+
+        // Aggiorna UI
+        document.getElementById('c1').style.backgroundColor = hex1;
+        document.getElementById('c1').innerText = hex1;
+        document.getElementById('c2').style.backgroundColor = hex2;
+        document.getElementById('c2').innerText = hex2;
+        
+        const gradient = `linear-gradient(135deg, ${hex1}, ${hex2})`;
+        document.body.style.background = gradient;
+        
+        cssCode.style.display = 'block';
+        cssCode.innerText = `background-image: ${gradient};`;
+        resultDiv.style.display = 'flex';
+    }
+
+    function rgbToHex(r, g, b) {
+        return "#" + [r, g, b].map(x => {
+            const hex = x.toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        }).join('').toUpperCase();
+    }
+</script>
+
+</body>
+</html>

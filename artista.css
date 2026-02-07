@@ -1,5 +1,9 @@
 /* Body */
+html{
+    overflow-x: scroll;
+}
 body{
+    width: 100%;
     overflow-x: hidden;
     font-family: 'Work Sans';
     font-style: italic;
@@ -57,11 +61,11 @@ body{
 }
 #testo{
     /* background-image: linear-gradient(to bottom right,#FBFFF1 , #AF90A9); */
-    background-color: #F7EBE8;
+    background-color: #FFFCF9;
     margin: 0 0 0 5%;
     border-radius: 15px;
     border-style: groove;
-    border-color: #8F91A2;
+    /* border-color: #8F91A2; */
     width: 90%;
 }
 #testo p{
@@ -86,7 +90,7 @@ body{
     margin-top: 10px;
     margin-bottom: 10px;
     height: 470px;
-    width: 1000px;
+    width: 70%;
     border-radius: 15px;
 }
 .album img{
@@ -158,7 +162,7 @@ h1{
     text-align: center;
 }
 
-@media(max-width: 640px){
+@media(max-width: 1000px){
     .barra{
         grid-template-columns: none;
         display: flex;

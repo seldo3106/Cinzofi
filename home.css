@@ -1,0 +1,58 @@
+body{
+    background-color: #FFFACC;
+    margin: 0;
+}
+.barra{
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    background-color: #FFEFBD;
+    width: 100%;
+}
+#titolo_barra{
+    display: flex;
+    justify-items: flex-start;
+    align-items: center;
+    text-align: center;
+}
+.corpo{
+    margin-left: 50px;
+    font-family: 'Work Sans';
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+}
+.corpus{
+    display: flex;
+    justify-items: flex-start;
+    align-items: center;
+}
+.artista{
+    margin-right: 50px;
+    width: 210px;
+    border-radius: 10px;
+    text-align: center;
+}
+img{
+    /* margin-top: -35px; */
+    place-items: center;
+    border-style: solid;
+    border-radius: 150px;
+    border: 0px;
+}
+@media(max-width: 500px){
+    .corpus{
+        display: block;
+    }
+    .artista{
+        width: 100%;
+        display: block;
+    }
+    .corpo{
+        margin-left: 0px;
+    }
+}
