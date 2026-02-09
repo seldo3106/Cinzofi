@@ -10,16 +10,15 @@ if($connessione->connect_error){
     die("Errore di connessione: " . $connessione->connect_error);
 }
 
-$id = $_GET['id']; 
+//Prende l'id dall'url
+$id = (int) $_GET['id']; 
 
-$sql = "SELECT * FROM artista WHERE idartista = " . $id;
-$richiesta = $connessione->query($sql);
+//Fa una richiesta per ottenere la ennupla dell'artista della pagina
+$richiesta = $connessione->query("SELECT * FROM artista WHERE idartista = " . $id);
 $artista = $richiesta->fetch_array();
 
-//$idalbum = $connessione->query("SELECT * FROM cantanti_album WHERE idartista = " . $id);
+//Cerca tutti gli album associati all'artista e li mette in ordine cronologico mettendo le più recenti in alto
 $album = $connessione->query("SELECT * FROM album INNER JOIN cantanti_album ON album.idalbum = cantanti_album.idalbum WHERE cantanti_album.idartista = ". $id . " ORDER BY data_pub DESC");
-
-
 
 ?>
 
@@ -35,7 +34,7 @@ $album = $connessione->query("SELECT * FROM album INNER JOIN cantanti_album ON a
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
-		<a href="home.html">
+		<a href="home.php">
 			<div id="indietro">
 				<img src="asset/left-arrow.png" height="75px">
 			</div>
@@ -51,8 +50,10 @@ $album = $connessione->query("SELECT * FROM album INNER JOIN cantanti_album ON a
 		</div>
 		
 		<div class="corpo">
-            <?php 
-            while($tempora = $album->fetch_array()){	//Ciclo per gli album
+            <?php
+
+			//Fa un ciclo per caricare tutti gli album
+            while($tempora = $album->fetch_array()){
 
 				//Per vedere se è un album, mixtape o EP
 				switch($tempora['tipo']){
@@ -80,6 +81,7 @@ $album = $connessione->query("SELECT * FROM album INNER JOIN cantanti_album ON a
 				
 				//Variabile dove vengono salvati le ennuple che contengono i singoli dell'album
 				$tempo = $connessione->query("SELECT * FROM singolo WHERE idalbum = " . $tempora['idalbum'] . " ORDER BY num_traccia ASC");
+
 				//Ciclo per la lista delle canzoni
 				while($singolo = $tempo->fetch_array()){
 					$testoHTML .= '<li><a href="singolo.php?id=' . $singolo['idsingolo'] . '">'. $singolo['nome'] .'</a></li>';
@@ -92,7 +94,10 @@ $album = $connessione->query("SELECT * FROM album INNER JOIN cantanti_album ON a
 		</div>
 		
 		<?php
+			//Cerca i singoli senza album associati all'artista e li mette in ordine cronologico
 			$richiesta = $connessione->query("SELECT * FROM singolo INNER JOIN cantanti_singolo ON singolo.idsingolo = cantanti_singolo.idsingolo WHERE cantanti_singolo.idartista = ". $id . " AND singolo.idalbum IS NULL ORDER BY data_pub DESC");
+
+			//Controlla se ci sono singoli
 			if($richiesta->num_rows > 0){
 				$testoHTML = '
 		<div class="barraSin">

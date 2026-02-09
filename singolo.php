@@ -10,7 +10,7 @@ if($connessione == false){
     die("Errore di connessione: " . $connessione->connect_error);
 }
 
-$id = $_GET['id'];
+$id = (int) $_GET['id'];
 
 //Salva la ennupla con le info di un singolo
 $temp = $connessione->query("SELECT * FROM singolo WHERE idsingolo = ". $id);

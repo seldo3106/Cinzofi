@@ -1,3 +1,37 @@
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$database = "cinzofi";
+
+$connessione = new mysqli($host, $user, $password, $database);
+
+if($connessione->connect_error){ 
+	die("Errore: " . $connessione->connect_error); 
+}
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+	//Funziona solo se non è vuoto
+	if(!empty($_POST['cerca'])){
+		//Prende dal form la ricerca dell'utente
+		$cerca = $_POST['cerca'];
+		//Creo la query qui per imperdire un possibile sql injection
+		$query = sprintf("SELECT idartista,nome FROM artista WHERE nome = '%s'",$connessione->real_escape_string($cerca));
+		//Manda la richiesta al db
+		$nomiArtisti = $connessione->query($query);
+		$nome = $nomiArtisti->fetch_array();
+
+		//Se è vuoto non va
+		if(!empty($nome)){
+			header("location: artisti.php?id=". $nome['idartista']);
+			exit();
+		}
+	}
+	
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -12,8 +46,15 @@
 	<body>
 		<div class="barra">
 			<!-- <h1 id="titolo_barra">ciao, spero piaccia<br>(non ho un logo)</h1> -->
-			 <i class="fas fa-music"></i>
 			<!-- <img src="logo_par.png" height="50px"> -->
+			<div class="barra-interna barra-sinistra">
+				<i class="fas fa-music"></i>
+			</div>
+			<form action="" method="post" class="barra-interna">
+				<input type="text" name="cerca" id="cerca">
+				<button type="submit">Cerca</button>
+			</form>
+			
 		</div>
 		<div class="corpo">
 			<h3>scegli quale di questi cantanti vuoi vedere</h3>
