@@ -10,11 +10,17 @@ if($connessione == false){
     die("Errore di connessione: " . $connessione->connect_error);
 }
 
+//Prende l'id dall'url come intero, per evitare SQL injection
 $id = (int) $_GET['id'];
 
 //Salva la ennupla con le info di un singolo
 $temp = $connessione->query("SELECT * FROM singolo WHERE idsingolo = ". $id);
 $singolo = $temp->fetch_array();
+//Se l'utente modifica l'id con uno inesistente rimanda alla pagina principale
+if(empty($singolo)){
+    header("location: home.php");
+    exit();
+}
 
 if($singolo['idalbum'] == null){
     //Salva la ennupla con le info di un singolo visto che non è associato a nessun album

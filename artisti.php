@@ -10,12 +10,17 @@ if($connessione->connect_error){
     die("Errore di connessione: " . $connessione->connect_error);
 }
 
-//Prende l'id dall'url
-$id = (int) $_GET['id']; 
+//Prende l'id dall'url come intero, per evitare SQL injection
+$id = (int) $_GET['id'];
 
 //Fa una richiesta per ottenere la ennupla dell'artista della pagina
 $richiesta = $connessione->query("SELECT * FROM artista WHERE idartista = " . $id);
 $artista = $richiesta->fetch_array();
+//Se l'utente modifica l'id con uno inesistente rimanda alla pagina principale
+if(empty($artista)){
+	header("location: home.php");
+	exit();
+}
 
 //Cerca tutti gli album associati all'artista e li mette in ordine cronologico mettendo le più recenti in alto
 $album = $connessione->query("SELECT * FROM album INNER JOIN cantanti_album ON album.idalbum = cantanti_album.idalbum WHERE cantanti_album.idartista = ". $id . " ORDER BY data_pub DESC");
